@@ -43,10 +43,10 @@ jobs:
       - name: Set bucket name
         id: bucket
         run: |
-          REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g')
-          BUCKET_NAME="terraform-state-${REPO_NAME}"
+          BUCKET_NAME="proyectointeligencia-terraform-state"
           echo "bucket_name=${BUCKET_NAME}" >> $GITHUB_OUTPUT
           echo "Bucket name: ${BUCKET_NAME}"
+          echo "Bucket length: ${#BUCKET_NAME}"
       
       # Configurar backend remoto para persistir el state
       - name: Configure Terraform Backend
