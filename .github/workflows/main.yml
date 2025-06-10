@@ -1,0 +1,156 @@
+name: Terraform Infrastructure
+
+on:
+  workflow_dispatch:  # Permite ejecutar manualmente
+    inputs:
+      action:
+        description: 'Terraform action to perform'
+        required: true
+        default: 'plan'
+        type: choice
+        options:
+        - plan
+        - apply
+        - destroy
+  push:
+    branches: [ main ]
+    paths: [ 'infra/**' ]  # Solo cuando cambien archivos de infra
+  pull_request:
+    branches: [ main ]
+    paths: [ 'infra/**' ]
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.0
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+      
+      # Configurar backend remoto para persistir el state
+      - name: Configure Terraform Backend
+        run: |
+          cat > infra/backend.tf << 'EOF'
+          terraform {
+            backend "s3" {
+              bucket = "proyecnegocios-terraform-state-${{ github.repository_owner }}"
+              key    = "terraform.tfstate"
+              region = "us-east-2"
+            }
+          }
+          EOF
+      
+      # Crear bucket para el state si no existe
+      - name: Create State Bucket
+        run: |
+          aws s3api head-bucket --bucket "proyecnegocios-terraform-state-${{ github.repository_owner }}" 2>/dev/null || \
+          aws s3 mb s3://proyecnegocios-terraform-state-${{ github.repository_owner }} --region us-east-2
+      
+      - name: Terraform Init
+        run: |
+          cd infra
+          terraform init
+      
+      - name: Terraform Validate
+        run: |
+          cd infra
+          terraform validate
+      
+      - name: Terraform Plan
+        id: plan
+        run: |
+          cd infra
+          terraform plan -out=tfplan -no-color
+        continue-on-error: true
+      
+      - name: Terraform Apply (manual dispatch)
+        if: github.event.inputs.action == 'apply'
+        run: |
+          cd infra
+          terraform apply -auto-approve tfplan
+      
+      - name: Terraform Apply (automatic on main)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && github.event.inputs.action != 'destroy'
+        run: |
+          cd infra
+          terraform apply -auto-approve tfplan
+      
+      - name: Terraform Destroy (manual only)
+        if: github.event.inputs.action == 'destroy'
+        run: |
+          cd infra
+          terraform destroy -auto-approve
+      
+      - name: Publish graph in step comment
+        run: |
+          echo "## Terraform Plan Results" >> $GITHUB_STEP_SUMMARY
+          echo "Action: ${{ github.event.inputs.action || 'auto' }}" >> $GITHUB_STEP_SUMMARY
+          echo "## Terramaid Graph" >> $GITHUB_STEP_SUMMARY
+          if [ -f infra/Terramaid.md ]; then
+            cat infra/Terramaid.md >> $GITHUB_STEP_SUMMARY
+          fi
+      
+      - name: Setup Graphviz
+        uses: ts-graphviz/setup-graphviz@v2
+      
+      - name: Setup inframap
+        run: |
+          curl -L -o /tmp/inframap.tar.gz "https://github.com/cycloidio/inframap/releases/download/v0.7.0/inframap-linux-amd64.tar.gz"
+          tar -xzvf /tmp/inframap.tar.gz -C /tmp
+          sudo mv /tmp/inframap-linux-amd64 /usr/local/bin/inframap
+          sudo chmod +x /usr/local/bin/inframap
+      
+      - name: Generate inframap
+        run: |
+          cd infra
+          inframap generate main.tf --raw | dot -Tsvg > inframap_aws.svg
+        continue-on-error: true
+      
+      - name: Upload inframap
+        uses: actions/upload-artifact@v4
+        with:
+          name: inframap-aws-diagram
+          path: infra/inframap_aws.svg
+        continue-on-error: true
+      
+      - name: Setup infracost
+        uses: infracost/actions/setup@v3
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+        continue-on-error: true
+      
+      - name: Generate infracost report
+        run: |
+          cd infra
+          infracost breakdown --path . --format html --out-file infracost-report.html
+          sed -i '19,137d' infracost-report.html
+          sed -i 's/$0/$ 0/g' infracost-report.html
+        continue-on-error: true
+      
+      - name: Convert HTML to Markdown
+        id: html2markdown
+        uses: rknj/html2markdown@v1.1.0
+        with:
+          html-file: "infra/infracost-report.html"
+        continue-on-error: true
+      
+      - name: Upload infracost report
+        run: |
+          echo "## Infracost Report" >> $GITHUB_STEP_SUMMARY
+          if [ -f infracost.md ]; then
+            echo "${{ steps.html2markdown.outputs.markdown-content }}" >> infracost.md
+            cat infracost.md >> $GITHUB_STEP_SUMMARY
+          fi
+        continue-on-error: true
