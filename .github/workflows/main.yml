@@ -61,6 +61,7 @@ jobs:
           }
           EOF
       
+
       # Verificar que el bucket existe (no crearlo)
       - name: Verify State Bucket exists
         run: |
@@ -78,6 +79,8 @@ jobs:
             --bucket "${{ steps.bucket.outputs.bucket_name }}" \
             --versioning-configuration Status=Enabled
         continue-on-error: true
+
+
       
       - name: Terraform Init
         run: |
@@ -116,10 +119,9 @@ jobs:
       
       - name: Publish results
         run: |
-          echo "## 🚀 Terraform Plan Results" >> $GITHUB_STEP_SUMMARY
-          echo "**Action:** ${{ github.event.inputs.action || 'auto' }}" >> $GITHUB_STEP_SUMMARY
-          echo "**State Bucket:** ${{ steps.bucket.outputs.bucket_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Terraform Plan Results" >> $GITHUB_STEP_SUMMARY
+          echo "Action: ${{ github.event.inputs.action || 'auto' }}" >> $GITHUB_STEP_SUMMARY
+          echo "State Bucket: ${{ steps.bucket.outputs.bucket_name }}" >> $GITHUB_STEP_SUMMARY
       
       - name: Setup Graphviz
         uses: ts-graphviz/setup-graphviz@v2
@@ -131,6 +133,8 @@ jobs:
           sudo mv /tmp/inframap-linux-amd64 /usr/local/bin/inframap
           sudo chmod +x /usr/local/bin/inframap
       
+
+
       - name: Generate inframap
         run: |
           cd infra
@@ -138,28 +142,18 @@ jobs:
           ls -la inframap_aws.svg  # Verificar que se creó
         continue-on-error: true
       
-      - name: Convert SVG to base64 and upload to summary
+      - name: Upload inframap to summary
         run: |
-          echo "## 🏗️ Infrastructure Diagram" >> $GITHUB_STEP_SUMMARY
+          echo "## Infrastructure Diagram" >> $GITHUB_STEP_SUMMARY
           if [ -f infra/inframap_aws.svg ]; then
-            # Convertir SVG a base64 y embebido
-            SVG_BASE64=$(base64 -w 0 infra/inframap_aws.svg)
-            echo '<img src="data:image/svg+xml;base64,'$SVG_BASE64'" alt="Infrastructure Diagram" width="800px" style="max-width: 100%;"/>' >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "✅ **Diagram generated successfully**" >> $GITHUB_STEP_SUMMARY
+            echo "![Infrastructure Diagram](./infra/inframap_aws.svg)" >> $GITHUB_STEP_SUMMARY
+            echo "Diagram generated successfully ✅" >> $GITHUB_STEP_SUMMARY
           else
-            echo "❌ **Diagram generation failed**" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### 📊 Infrastructure Overview (Manual)" >> $GITHUB_STEP_SUMMARY
-            echo "- 🪣 **S3 Bucket**: \`proyecnegocios-[random]\`" >> $GITHUB_STEP_SUMMARY
-            echo "- 🗄️ **Glue Database**: \`proyecnegocios_db_2\`" >> $GITHUB_STEP_SUMMARY
-            echo "- 📋 **Glue Table**: \`ofertas_limpias_2\` (20 columns)" >> $GITHUB_STEP_SUMMARY
-            echo "- 🔍 **Athena Workgroup**: \`primary_2\`" >> $GITHUB_STEP_SUMMARY
+            echo "❌ Diagram generation failed" >> $GITHUB_STEP_SUMMARY
           fi
-          echo "" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
       
-      - name: Upload inframap artifact
+      - name: Upload inframap
         uses: actions/upload-artifact@v4
         with:
           name: inframap-aws-diagram
@@ -175,67 +169,38 @@ jobs:
       - name: Generate infracost report
         run: |
           cd infra
-          infracost breakdown --path . --format table --out-file infracost-table.txt
-          infracost breakdown --path . --format json --out-file infracost-report.json
+          infracost breakdown --path . --format html --out-file infracost-report.html
+          infracost breakdown --path . --format table >> infracost-table.txt
           ls -la infracost*  # Verificar archivos generados
         continue-on-error: true
       
-      - name: Upload clean cost analysis to summary
+      - name: Convert HTML to Markdown
+        id: html2markdown
+        uses: rknj/html2markdown@v1.1.0
+        with:
+          html-file: "infra/infracost-report.html"
+        continue-on-error: true
+      
+      - name: Upload infracost report to summary
         run: |
           echo "## 💰 Cost Analysis Report" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
           if [ -f infra/infracost-table.txt ]; then
-            echo "### 📊 **Detailed Cost Breakdown:**" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
             cat infra/infracost-table.txt >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-          else
-            echo "### 📊 **Estimated Monthly Costs:**" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "| Resource | Estimated Cost |" >> $GITHUB_STEP_SUMMARY
-            echo "|----------|----------------|" >> $GITHUB_STEP_SUMMARY
-            echo "| S3 Bucket (Standard) | ~$0.50/month |" >> $GITHUB_STEP_SUMMARY
-            echo "| Glue Database | $0.00 |" >> $GITHUB_STEP_SUMMARY
-            echo "| Glue Table | $0.00 |" >> $GITHUB_STEP_SUMMARY
-            echo "| Athena Workgroup | $0.00 (pay per query) |" >> $GITHUB_STEP_SUMMARY
-            echo "| **Total Estimated** | **~$0.50/month** |" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           fi
-          
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ **Cost analysis completed successfully**" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "> 💡 **Note:** Actual costs may vary based on usage patterns and data volume." >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ steps.html2markdown.outputs.markdown-content }}" ]; then
+            echo "${{ steps.html2markdown.outputs.markdown-content }}" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "Cost analysis completed successfully ✅" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
-      - name: Upload cost report artifacts
+      - name: Upload cost report artifact
         uses: actions/upload-artifact@v4
         with:
-          name: infracost-reports
+          name: infracost-report
           path: |
+            infra/infracost-report.html
             infra/infracost-table.txt
-            infra/infracost-report.json
         continue-on-error: true
 
-      - name: Final summary
-        run: |
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "## 📋 **Summary**" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ **Terraform validation**: Passed" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ **Infrastructure diagram**: Generated" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ **Cost analysis**: Completed" >> $GITHUB_STEP_SUMMARY
-          echo "- 📦 **Artifacts**: Available for download" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "🎯 **Next steps:**" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ github.event.inputs.action }}" = "plan" ]; then
-            echo "- Review the infrastructure changes above" >> $GITHUB_STEP_SUMMARY
-            echo "- If everything looks good, run the workflow again with **'apply'** action" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ github.event.inputs.action }}" = "apply" ]; then
-            echo "- ✅ Infrastructure has been deployed successfully!" >> $GITHUB_STEP_SUMMARY
-            echo "- You can now use your AWS resources for data processing" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ github.event.inputs.action }}" = "destroy" ]; then
-            echo "- ✅ Infrastructure has been destroyed successfully!" >> $GITHUB_STEP_SUMMARY
-            echo "- All resources have been cleaned up" >> $GITHUB_STEP_SUMMARY
-          fi
