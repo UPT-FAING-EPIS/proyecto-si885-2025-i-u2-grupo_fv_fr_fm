@@ -8,7 +8,6 @@ Bienvenido a la **Plataforma de Análisis del Mercado Laboral Tecnológico**, un
 
 En un mercado tecnológico en constante evolución, entender las tendencias de la demanda, las habilidades más solicitadas y las expectativas salariales es crucial para la toma de decisiones estratégicas. Esta plataforma busca empoderar a los individuos para orientar su carrera, planificar su formación continua, y ayudar a las instituciones educativas a adaptar sus currículas a las necesidades reales del dinámico sector TI.
 
-Este proyecto utiliza un pipeline de datos que comienza con la **carga y limpieza de ofertas laborales a través de un módulo en Streamlit**, procesa y almacena estos datos en **Amazon S3**, los cataloga con **AWS Glue**, y permite análisis complejos y la creación de un modelo dimensional mediante **Amazon Athena**. Finalmente, los insights se visualizan en un **dashboard interactivo construido con Power BI**, conectado a Athena a través de ODBC.
 
 ## 🎯 Objetivos del Proyecto
 
