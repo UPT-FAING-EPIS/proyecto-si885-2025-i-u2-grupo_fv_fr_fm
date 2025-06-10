@@ -38,14 +38,3 @@ Para lograr esto, el **dashboard de Power BI** se enfoca en los siguientes objet
 5.  **Visualizar la Demanda por Niveles Educativos en el Sector Tecnológico:**
     *   Proporcionar gráficos y análisis que muestren la relación entre el nivel educativo requerido (Técnico, Universitario, Magíster, certificaciones, etc.) y las ofertas laborales disponibles en el sector TI. Esto permitirá a los usuarios evaluar cómo los requisitos educativos varían entre diferentes roles y si se alinean con sus estudios actuales o planificados.
 
-## 🛠️ Tecnologías Utilizadas
-
-*   **Procesamiento y Limpieza de Datos:** Python (Pandas) a través de una aplicación en Streamlit.
-*   **Almacenamiento de Datos (Data Lake):** Amazon S3.
-*   **Catálogo de Datos y ETL (potencial):** AWS Glue.
-*   **Motor de Consultas y Modelo Dimensional (Vistas):** Amazon Athena.
-*   **Conectividad:** Driver ODBC para Athena.
-*   **Visualización y Business Intelligence:** Microsoft Power BI.
-
----
-<!-- Opcional: Añade aquí otras secciones como "Autores", "Estructura del Proyecto", etc. -->
