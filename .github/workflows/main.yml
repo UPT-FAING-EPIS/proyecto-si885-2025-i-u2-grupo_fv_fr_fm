@@ -1,7 +1,7 @@
 name: Terraform Infrastructure
 
 on:
-  workflow_dispatch:  # Permite ejecutar manualmente
+  workflow_dispatch:
     inputs:
       action:
         description: 'Terraform action to perform'
@@ -14,7 +14,7 @@ on:
         - destroy
   push:
     branches: [ main ]
-    paths: [ 'infra/**' ]  # Solo cuando cambien archivos de infra
+    paths: [ 'infra/**' ]
   pull_request:
     branches: [ main ]
     paths: [ 'infra/**' ]
@@ -39,13 +39,22 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
       
+      # Crear nombre de bucket válido (solo minúsculas y guiones)
+      - name: Set bucket name
+        id: bucket
+        run: |
+          REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g')
+          BUCKET_NAME="terraform-state-${REPO_NAME}"
+          echo "bucket_name=${BUCKET_NAME}" >> $GITHUB_OUTPUT
+          echo "Bucket name: ${BUCKET_NAME}"
+      
       # Configurar backend remoto para persistir el state
       - name: Configure Terraform Backend
         run: |
-          cat > infra/backend.tf << 'EOF'
+          cat > infra/backend.tf << EOF
           terraform {
             backend "s3" {
-              bucket = "proyecnegocios-terraform-state-${{ github.repository_owner }}"
+              bucket = "${{ steps.bucket.outputs.bucket_name }}"
               key    = "terraform.tfstate"
               region = "us-east-2"
             }
@@ -55,8 +64,14 @@ jobs:
       # Crear bucket para el state si no existe
       - name: Create State Bucket
         run: |
-          aws s3api head-bucket --bucket "proyecnegocios-terraform-state-${{ github.repository_owner }}" 2>/dev/null || \
-          aws s3 mb s3://proyecnegocios-terraform-state-${{ github.repository_owner }} --region us-east-2
+          aws s3api head-bucket --bucket "${{ steps.bucket.outputs.bucket_name }}" 2>/dev/null || \
+          aws s3 mb s3://${{ steps.bucket.outputs.bucket_name }} --region us-east-2
+      
+      - name: Enable bucket versioning
+        run: |
+          aws s3api put-bucket-versioning \
+            --bucket "${{ steps.bucket.outputs.bucket_name }}" \
+            --versioning-configuration Status=Enabled
       
       - name: Terraform Init
         run: |
@@ -93,14 +108,11 @@ jobs:
           cd infra
           terraform destroy -auto-approve
       
-      - name: Publish graph in step comment
+      - name: Publish results
         run: |
           echo "## Terraform Plan Results" >> $GITHUB_STEP_SUMMARY
           echo "Action: ${{ github.event.inputs.action || 'auto' }}" >> $GITHUB_STEP_SUMMARY
-          echo "## Terramaid Graph" >> $GITHUB_STEP_SUMMARY
-          if [ -f infra/Terramaid.md ]; then
-            cat infra/Terramaid.md >> $GITHUB_STEP_SUMMARY
-          fi
+          echo "State Bucket: ${{ steps.bucket.outputs.bucket_name }}" >> $GITHUB_STEP_SUMMARY
       
       - name: Setup Graphviz
         uses: ts-graphviz/setup-graphviz@v2
@@ -135,22 +147,12 @@ jobs:
         run: |
           cd infra
           infracost breakdown --path . --format html --out-file infracost-report.html
-          sed -i '19,137d' infracost-report.html
-          sed -i 's/$0/$ 0/g' infracost-report.html
         continue-on-error: true
       
-      - name: Convert HTML to Markdown
-        id: html2markdown
-        uses: rknj/html2markdown@v1.1.0
-        with:
-          html-file: "infra/infracost-report.html"
-        continue-on-error: true
-      
-      - name: Upload infracost report
+      - name: Upload infracost report to summary
         run: |
           echo "## Infracost Report" >> $GITHUB_STEP_SUMMARY
-          if [ -f infracost.md ]; then
-            echo "${{ steps.html2markdown.outputs.markdown-content }}" >> infracost.md
-            cat infracost.md >> $GITHUB_STEP_SUMMARY
+          if [ -f infra/infracost-report.html ]; then
+            echo "Cost analysis completed successfully" >> $GITHUB_STEP_SUMMARY
           fi
         continue-on-error: true
