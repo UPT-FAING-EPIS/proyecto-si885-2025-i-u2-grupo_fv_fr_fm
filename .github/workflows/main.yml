@@ -133,10 +133,24 @@ jobs:
           sudo mv /tmp/inframap-linux-amd64 /usr/local/bin/inframap
           sudo chmod +x /usr/local/bin/inframap
       
+
+
       - name: Generate inframap
         run: |
           cd infra
           inframap generate main.tf --raw | dot -Tsvg > inframap_aws.svg
+          ls -la inframap_aws.svg  # Verificar que se creó
+        continue-on-error: true
+      
+      - name: Upload inframap to summary
+        run: |
+          echo "## Infrastructure Diagram" >> $GITHUB_STEP_SUMMARY
+          if [ -f infra/inframap_aws.svg ]; then
+            echo "![Infrastructure Diagram](./infra/inframap_aws.svg)" >> $GITHUB_STEP_SUMMARY
+            echo "Diagram generated successfully ✅" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Diagram generation failed" >> $GITHUB_STEP_SUMMARY
+          fi
         continue-on-error: true
       
       - name: Upload inframap
@@ -156,12 +170,38 @@ jobs:
         run: |
           cd infra
           infracost breakdown --path . --format html --out-file infracost-report.html
+          infracost breakdown --path . --format table >> infracost-table.txt
+          ls -la infracost*  # Verificar archivos generados
+        continue-on-error: true
+      
+      - name: Convert HTML to Markdown
+        id: html2markdown
+        uses: rknj/html2markdown@v1.1.0
+        with:
+          html-file: "infra/infracost-report.html"
         continue-on-error: true
       
       - name: Upload infracost report to summary
         run: |
-          echo "## Infracost Report" >> $GITHUB_STEP_SUMMARY
-          if [ -f infra/infracost-report.html ]; then
-            echo "Cost analysis completed successfully" >> $GITHUB_STEP_SUMMARY
+          echo "## 💰 Cost Analysis Report" >> $GITHUB_STEP_SUMMARY
+          if [ -f infra/infracost-table.txt ]; then
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            cat infra/infracost-table.txt >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           fi
+          if [ -n "${{ steps.html2markdown.outputs.markdown-content }}" ]; then
+            echo "${{ steps.html2markdown.outputs.markdown-content }}" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "Cost analysis completed successfully ✅" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
+
+      - name: Upload cost report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: infracost-report
+          path: |
+            infra/infracost-report.html
+            infra/infracost-table.txt
+        continue-on-error: true
+
+# ...existing code...
