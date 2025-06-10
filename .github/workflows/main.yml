@@ -61,17 +61,26 @@ jobs:
           }
           EOF
       
-      # Crear bucket para el state si no existe
-      - name: Create State Bucket
+
+      # Verificar que el bucket existe (no crearlo)
+      - name: Verify State Bucket exists
         run: |
-          aws s3api head-bucket --bucket "${{ steps.bucket.outputs.bucket_name }}" 2>/dev/null || \
-          aws s3 mb s3://${{ steps.bucket.outputs.bucket_name }} --region us-east-2
-      
+          if aws s3api head-bucket --bucket "${{ steps.bucket.outputs.bucket_name }}" 2>/dev/null; then
+            echo "✅ Bucket exists: ${{ steps.bucket.outputs.bucket_name }}"
+          else
+            echo "❌ Bucket doesn't exist: ${{ steps.bucket.outputs.bucket_name }}"
+            exit 1
+          fi
+
+      # Habilitar versionado si no está activado
       - name: Enable bucket versioning
         run: |
           aws s3api put-bucket-versioning \
             --bucket "${{ steps.bucket.outputs.bucket_name }}" \
             --versioning-configuration Status=Enabled
+        continue-on-error: true
+
+
       
       - name: Terraform Init
         run: |
