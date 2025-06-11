@@ -1,80 +1,99 @@
-name: Create Release
+name: Auto-Tag on Main Push
 
 on:
   push:
-    tags:
-      - 'v*' 
+    branches:
+      - main # O tu rama principal
 
-permissions: 
-  contents: write
+permissions:
+  contents: write # Necesario para hacer push de tags
 
 jobs:
-  build_and_release:
+  tag_and_release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Necesario para obtener todos los tags y el historial
 
-      - name: Get Release Version from Tag
-        id: get_version
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
-      - name: Create Release Notes (Optional - Placeholder)
-        id: create_release_notes
+      - name: Configure Git User
         run: |
-          echo "## Release Notes for ${{ env.RELEASE_VERSION }}" > release_notes.md
-          echo "" >> release_notes.md
-          echo "Esta es la versión ${{ env.RELEASE_VERSION }} de la Plataforma de Análisis del Mercado Laboral Tecnológico." >> release_notes.md
-          echo "" >> release_notes.md
-          echo "Cambios principales:" >> release_notes.md
-          echo "- (Añade aquí los cambios importantes de esta versión)" >> release_notes.md
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
 
-      - name: Zip Release Assets
+      - name: Get Latest Tag and Calculate Next Version
+        id: versioning
         run: |
-          mkdir release_package
-          echo "Copiando archivos del release..."
-          if [ -f Programa/app_limpieza_ofertas.py ]; then
-            cp Programa/app_limpieza_ofertas.py release_package/
-            echo "Copiado: Programa/app_limpieza_ofertas.py"
-          else
-            echo "ADVERTENCIA: Programa/app_limpieza_ofertas.py no encontrado."
-          fi
-          
-          if [ -f Programa/requirements.txt ]; then
-            cp Programa/requirements.txt release_package/
-            echo "Copiado: Programa/requirements.txt"
-          else
-            echo "ADVERTENCIA: Programa/requirements.txt no encontrado."
-          fi
-          
-          # La línea para copiar README.md ha sido eliminada.
-          
-          # Aquí puedes añadir más archivos si los necesitas en tu release, ajustando sus rutas.
-          # Ejemplo si tuvieras un archivo SQL en una carpeta 'sql_scripts':
-          # if [ -f sql_scripts/vistas_athena.sql ]; then cp sql_scripts/vistas_athena.sql release_package/; fi
+          # Obtener el último tag semántico (ej. vX.Y.Z)
+          LATEST_TAG=$(git describe --tags --abbrev=0 `git rev-list --tags --max-count=1` 2>/dev/null || echo "v0.0.0")
+          echo "Latest tag: $LATEST_TAG"
 
-          echo "Creando archivo ZIP..."
-          zip -r release_v${{ env.RELEASE_VERSION }}.zip release_package/
-          echo "Archivo ZIP creado: release_v${{ env.RELEASE_VERSION }}.zip"
+          # Extraer partes de la versión (asumiendo formato vX.Y.Z)
+          VERSION_PARTS=$(echo $LATEST_TAG | sed 's/^v//' | awk -F. '{print $1" "$2" "$3}')
+          read MAJOR MINOR PATCH <<< "$VERSION_PARTS"
+          
+          # Incrementar PATCH (lógica de versionamiento simple)
+          PATCH=$((PATCH + 1))
+          NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+          echo "Calculated new tag: $NEW_TAG"
+          echo "NEW_TAG_ENV=$NEW_TAG" >> $GITHUB_ENV
 
-      - name: Create GitHub Release
-        id: create_release
+      - name: Create and Push New Tag
+        run: |
+          # Verificar si el tag ya existe (por si acaso)
+          if git rev-parse ${{ env.NEW_TAG_ENV }} >/dev/null 2>&1; then
+            echo "Tag ${{ env.NEW_TAG_ENV }} already exists. Skipping tag creation."
+          else
+            echo "Creating tag ${{ env.NEW_TAG_ENV }}"
+            git tag ${{ env.NEW_TAG_ENV }} -m "Automatic release ${{ env.NEW_TAG_ENV }}"
+            git push origin ${{ env.NEW_TAG_ENV }}
+            echo "Pushed tag ${{ env.NEW_TAG_ENV }}"
+          fi
+        # ATENCIÓN: Para que `git push` funcione, el GITHUB_TOKEN podría necesitar
+        # permisos de "contents: write" y a veces se necesita un PAT para evitar
+        # que el push del action active otros workflows de forma recursiva.
+        # O usar una acción específica para crear y empujar tags que maneje esto.
+
+      # --- DESDE AQUÍ, PODRÍAS REUTILIZAR LA LÓGICA DE TU WORKFLOW DE RELEASE ---
+      # O tener un SEGUNDO workflow que se active por el push de este nuevo tag.
+      # Si lo haces en el mismo workflow, asegúrate de que la lógica de release
+      # use la variable env.NEW_TAG_ENV.
+
+      # Ejemplo: Crear el Release de GitHub para el NUEVO tag creado
+      - name: Create Release Notes for New Tag
+        if: steps.versioning.outputs.NEW_TAG_ENV != '' # Solo si se calculó un nuevo tag
+        run: |
+          echo "## Release Notes for ${{ env.NEW_TAG_ENV }}" > release_notes_${{ env.NEW_TAG_ENV }}.md
+          # ... (añade contenido a las notas) ...
+
+      - name: Zip Assets for New Tag (Ajusta según tu estructura)
+        if: steps.versioning.outputs.NEW_TAG_ENV != ''
+        run: |
+          mkdir release_package_${{ env.NEW_TAG_ENV }}
+          cp Programa/app_limpieza_ofertas.py release_package_${{ env.NEW_TAG_ENV }}/
+          cp Programa/requirements.txt release_package_${{ env.NEW_TAG_ENV }}/
+          zip -r release_${{ env.NEW_TAG_ENV }}.zip release_package_${{ env.NEW_TAG_ENV }}/
+
+      - name: Create GitHub Release for New Tag
+        if: steps.versioning.outputs.NEW_TAG_ENV != ''
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }} 
-          release_name: Release ${{ env.RELEASE_VERSION }}
-          body_path: release_notes.md 
+          tag_name: ${{ env.NEW_TAG_ENV }} # Usa el nuevo tag calculado
+          release_name: Release ${{ env.NEW_TAG_ENV }}
+          body_path: release_notes_${{ env.NEW_TAG_ENV }}.md
           draft: false
-          prerelease: false 
+          prerelease: false
 
-      - name: Upload Release Asset (ZIP)
+      - name: Upload Release Asset for New Tag
+        if: steps.versioning.outputs.NEW_TAG_ENV != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./release_v${{ env.RELEASE_VERSION }}.zip 
-          asset_name: plataforma_analisis_laboral_v${{ env.RELEASE_VERSION }}.zip 
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # Ojo, esto podría necesitar el output del create_release específico para este tag
+          asset_path: ./release_${{ env.NEW_TAG_ENV }}.zip
+          asset_name: plataforma_analisis_laboral_${{ env.NEW_TAG_ENV }}.zip
           asset_content_type: application/zip
