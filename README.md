@@ -4,7 +4,7 @@
 
 ## 👋 Introducción
 
-Bienvenido a la **Plataforma de Análisis del Mercado Laboral Tecnológico**, una herramienta diseñada para proporcionar insights valiosos y actualizados sobre las oportunidades de empleo para profesionales y estudiantes de carreras como Ingeniería de Sistemas, Desarrollo de Software, Ciencia de la Computación, Informática, Análisis de Datos y otras disciplinas afines en el país.
+Bienvenido a la **Plataforma de Análisis del Mercado Laboral Tecnológico**, una herramienta diseñada para proporcionar insights valiosos y actualizados sobre las oportunidades de empleo para profesionales y estudiantes de tecnologias de informacion.
 
 En un mercado tecnológico en constante evolución, entender las tendencias de la demanda, las habilidades más solicitadas y las expectativas salariales es crucial para la toma de decisiones estratégicas. Esta plataforma busca empoderar a los individuos para orientar su carrera, planificar su formación continua, y ayudar a las instituciones educativas a adaptar sus currículas a las necesidades reales del dinámico sector TI.
 
