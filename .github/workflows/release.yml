@@ -1,4 +1,4 @@
-name: Auto-Tag on Main Push
+name: Auto-Tag and Create Release on Main Push
 
 on:
   push:
@@ -6,11 +6,13 @@ on:
       - main # O tu rama principal
 
 permissions:
-  contents: write # Necesario para hacer push de tags
+  contents: write # Necesario para hacer push de tags y crear releases
 
 jobs:
   tag_and_release:
     runs-on: ubuntu-latest
+    outputs: # Definir outputs a nivel de job si fueran necesarios para otros jobs, no estrictamente para este caso
+      new_tag_created: ${{ steps.versioning.outputs.NEW_TAG_VALUE }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,77 +25,106 @@ jobs:
           git config user.email "action@github.com"
 
       - name: Get Latest Tag and Calculate Next Version
-        id: versioning
+        id: versioning # ID del paso para referenciar sus outputs
         run: |
-          # Obtener el último tag semántico (ej. vX.Y.Z)
-          LATEST_TAG=$(git describe --tags --abbrev=0 `git rev-list --tags --max-count=1` 2>/dev/null || echo "v0.0.0")
+          LATEST_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.0")
           echo "Latest tag: $LATEST_TAG"
 
           # Extraer partes de la versión (asumiendo formato vX.Y.Z)
-          VERSION_PARTS=$(echo $LATEST_TAG | sed 's/^v//' | awk -F. '{print $1" "$2" "$3}')
-          read MAJOR MINOR PATCH <<< "$VERSION_PARTS"
+          # Quitar la 'v' inicial
+          VERSION_NO_V=$(echo $LATEST_TAG | sed 's/^v//')
+          
+          # Separar MAJOR.MINOR.PATCH
+          MAJOR=$(echo $VERSION_NO_V | cut -d. -f1)
+          MINOR=$(echo $VERSION_NO_V | cut -d. -f2)
+          PATCH=$(echo $VERSION_NO_V | cut -d. -f3)
           
           # Incrementar PATCH (lógica de versionamiento simple)
           PATCH=$((PATCH + 1))
           NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+          
           echo "Calculated new tag: $NEW_TAG"
-          echo "NEW_TAG_ENV=$NEW_TAG" >> $GITHUB_ENV
+          # Establecer como output del paso para que otros pasos puedan usarlo
+          echo "NEW_TAG_VALUE=$NEW_TAG" >> $GITHUB_OUTPUT
 
       - name: Create and Push New Tag
+        # Solo ejecutar si se calculó un nuevo tag
+        if: steps.versioning.outputs.NEW_TAG_VALUE != ''
+        env: # Pasar el tag como variable de entorno para el script
+          CALCULATED_NEW_TAG: ${{ steps.versioning.outputs.NEW_TAG_VALUE }}
         run: |
-          # Verificar si el tag ya existe (por si acaso)
-          if git rev-parse ${{ env.NEW_TAG_ENV }} >/dev/null 2>&1; then
-            echo "Tag ${{ env.NEW_TAG_ENV }} already exists. Skipping tag creation."
+          # Verificar si el tag ya existe (por si acaso, aunque la lógica de incremento debería evitarlo)
+          if git rev-parse ${{ env.CALCULATED_NEW_TAG }} >/dev/null 2>&1; then
+            echo "Tag ${{ env.CALCULATED_NEW_TAG }} already exists. Skipping tag creation."
+            # Si el tag ya existe, podríamos querer que los pasos de release no se ejecuten
+            # o que se ejecuten si el contenido ha cambiado.
+            # Por ahora, si existe, los siguientes pasos con 'if' no se ejecutarán si NEW_TAG_VALUE se vacía.
+            # Para forzar que no continúe si el tag ya existe y no queremos re-release:
+            # exit 1 # O alguna otra forma de indicar que no hay nuevo tag que procesar
           else
-            echo "Creating tag ${{ env.NEW_TAG_ENV }}"
-            git tag ${{ env.NEW_TAG_ENV }} -m "Automatic release ${{ env.NEW_TAG_ENV }}"
-            git push origin ${{ env.NEW_TAG_ENV }}
-            echo "Pushed tag ${{ env.NEW_TAG_ENV }}"
+            echo "Creating tag ${{ env.CALCULATED_NEW_TAG }}"
+            git tag ${{ env.CALCULATED_NEW_TAG }} -m "Automatic release ${{ env.CALCULATED_NEW_TAG }}"
+            git push origin ${{ env.CALCULATED_NEW_TAG }}
+            echo "Pushed tag ${{ env.CALCULATED_NEW_TAG }}"
           fi
-        # ATENCIÓN: Para que `git push` funcione, el GITHUB_TOKEN podría necesitar
-        # permisos de "contents: write" y a veces se necesita un PAT para evitar
-        # que el push del action active otros workflows de forma recursiva.
-        # O usar una acción específica para crear y empujar tags que maneje esto.
 
-      # --- DESDE AQUÍ, PODRÍAS REUTILIZAR LA LÓGICA DE TU WORKFLOW DE RELEASE ---
-      # O tener un SEGUNDO workflow que se active por el push de este nuevo tag.
-      # Si lo haces en el mismo workflow, asegúrate de que la lógica de release
-      # use la variable env.NEW_TAG_ENV.
-
-      # Ejemplo: Crear el Release de GitHub para el NUEVO tag creado
       - name: Create Release Notes for New Tag
-        if: steps.versioning.outputs.NEW_TAG_ENV != '' # Solo si se calculó un nuevo tag
+        if: steps.versioning.outputs.NEW_TAG_VALUE != '' # Condición basada en el output del paso 'versioning'
+        env:
+          NEW_TAG_FROM_STEP: ${{ steps.versioning.outputs.NEW_TAG_VALUE }}
         run: |
-          echo "## Release Notes for ${{ env.NEW_TAG_ENV }}" > release_notes_${{ env.NEW_TAG_ENV }}.md
-          # ... (añade contenido a las notas) ...
+          echo "## Release Notes for ${{ env.NEW_TAG_FROM_STEP }}" > release_notes.md
+          echo "" >> release_notes.md
+          echo "Esta es la versión ${{ env.NEW_TAG_FROM_STEP }} de la Plataforma de Análisis del Mercado Laboral Tecnológico." >> release_notes.md
+          echo "" >> release_notes.md
+          echo "Cambios principales:" >> release_notes.md
+          echo "- Actualización automática." >> release_notes.md
 
-      - name: Zip Assets for New Tag (Ajusta según tu estructura)
-        if: steps.versioning.outputs.NEW_TAG_ENV != ''
+      - name: Zip Assets for New Tag
+        if: steps.versioning.outputs.NEW_TAG_VALUE != ''
+        env:
+          NEW_TAG_FROM_STEP: ${{ steps.versioning.outputs.NEW_TAG_VALUE }}
         run: |
-          mkdir release_package_${{ env.NEW_TAG_ENV }}
-          cp Programa/app_limpieza_ofertas.py release_package_${{ env.NEW_TAG_ENV }}/
-          cp Programa/requirements.txt release_package_${{ env.NEW_TAG_ENV }}/
-          zip -r release_${{ env.NEW_TAG_ENV }}.zip release_package_${{ env.NEW_TAG_ENV }}/
+          mkdir release_package
+          echo "Copiando archivos del release para el tag ${{ env.NEW_TAG_FROM_STEP }}..."
+          if [ -f Programa/app_limpieza_ofertas.py ]; then
+            cp Programa/app_limpieza_ofertas.py release_package/
+            echo "Copiado: Programa/app_limpieza_ofertas.py"
+          else
+            echo "ADVERTENCIA: Programa/app_limpieza_ofertas.py no encontrado."
+          fi
+          
+          if [ -f Programa/requirements.txt ]; then
+            cp Programa/requirements.txt release_package/
+            echo "Copiado: Programa/requirements.txt"
+          else
+            echo "ADVERTENCIA: Programa/requirements.txt no encontrado."
+          fi
+          
+          echo "Creando archivo ZIP..."
+          zip -r release_${{ env.NEW_TAG_FROM_STEP }}.zip release_package/
+          echo "Archivo ZIP creado: release_${{ env.NEW_TAG_FROM_STEP }}.zip"
 
       - name: Create GitHub Release for New Tag
-        if: steps.versioning.outputs.NEW_TAG_ENV != ''
+        if: steps.versioning.outputs.NEW_TAG_VALUE != ''
         uses: actions/create-release@v1
+        id: create_new_release # ID para referenciar su output (upload_url)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.NEW_TAG_ENV }} # Usa el nuevo tag calculado
-          release_name: Release ${{ env.NEW_TAG_ENV }}
-          body_path: release_notes_${{ env.NEW_TAG_ENV }}.md
+          tag_name: ${{ steps.versioning.outputs.NEW_TAG_VALUE }} 
+          release_name: Release ${{ steps.versioning.outputs.NEW_TAG_VALUE }}
+          body_path: release_notes.md # Asegúrate que este archivo se cree con el nombre correcto
           draft: false
           prerelease: false
 
       - name: Upload Release Asset for New Tag
-        if: steps.versioning.outputs.NEW_TAG_ENV != ''
+        if: steps.versioning.outputs.NEW_TAG_VALUE != '' && steps.create_new_release.outputs.upload_url != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # Ojo, esto podría necesitar el output del create_release específico para este tag
-          asset_path: ./release_${{ env.NEW_TAG_ENV }}.zip
-          asset_name: plataforma_analisis_laboral_${{ env.NEW_TAG_ENV }}.zip
+          upload_url: ${{ steps.create_new_release.outputs.upload_url }} 
+          asset_path: ./release_${{ steps.versioning.outputs.NEW_TAG_VALUE }}.zip
+          asset_name: plataforma_analisis_laboral_${{ steps.versioning.outputs.NEW_TAG_VALUE }}.zip
           asset_content_type: application/zip
