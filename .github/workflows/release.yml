@@ -33,13 +33,18 @@ jobs:
       - name: Zip Release Assets
         run: |
           mkdir release_package
-          cp app_limpieza_ofertas.py release_package/ # Tu script de Streamlit
-          cp requirements.txt release_package/
-          # cp sql_vistas_athena.sql release_package/ # Si tienes un archivo con las vistas
-          # cp ejemplo_datos_entrada.csv release_package/ # Un CSV de ejemplo
-          # cp README.md release_package/
-          # Si tienes el PBIX en el repo (no siempre recomendado por tamaño):
-          # cp "Mi Dashboard PowerBI.pbix" release_package/ 
+          # Copiar los archivos desde la carpeta Programa
+          cp Programa/app_limpieza_ofertas.py release_package/
+          cp Programa/requirements.txt release_package/
+          
+          # Si tienes otros archivos que quieres incluir en el release,
+          # asegúrate de poner su ruta correcta también.
+          # Por ejemplo, el README.md está en la raíz:
+          if [ -f README.md ]; then cp README.md release_package/; fi
+
+          # Ejemplo si tuvieras un archivo SQL en una carpeta 'sql_scripts':
+          # if [ -f sql_scripts/vistas_athena.sql ]; then cp sql_scripts/vistas_athena.sql release_package/; fi
+          
           zip -r release_v${{ env.RELEASE_VERSION }}.zip release_package/
 
       - name: Create GitHub Release
