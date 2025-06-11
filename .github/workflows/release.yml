@@ -1,0 +1,65 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*' 
+
+permissions: 
+  contents: write
+
+jobs:
+  build_and_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 
+
+      - name: Get Release Version from Tag
+        id: get_version
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Create Release Notes (Optional - Placeholder)
+        id: create_release_notes
+        run: |
+          echo "## Release Notes for ${{ env.RELEASE_VERSION }}" > release_notes.md
+          echo "" >> release_notes.md
+          echo "Esta es la versión ${{ env.RELEASE_VERSION }} de la Plataforma de Análisis del Mercado Laboral Tecnológico." >> release_notes.md
+          echo "" >> release_notes.md
+          echo "Cambios principales:" >> release_notes.md
+          echo "- (Añade aquí los cambios importantes de esta versión)" >> release_notes.md
+          # Podrías generar esto automáticamente a partir de los commits si quieres algo más avanzado
+
+      - name: Zip Release Assets
+        run: |
+          mkdir release_package
+          cp app_limpieza_ofertas.py release_package/ # Tu script de Streamlit
+          cp requirements.txt release_package/
+          # cp sql_vistas_athena.sql release_package/ # Si tienes un archivo con las vistas
+          # cp ejemplo_datos_entrada.csv release_package/ # Un CSV de ejemplo
+          # cp README.md release_package/
+          # Si tienes el PBIX en el repo (no siempre recomendado por tamaño):
+          # cp "Mi Dashboard PowerBI.pbix" release_package/ 
+          zip -r release_v${{ env.RELEASE_VERSION }}.zip release_package/
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }} 
+          release_name: Release ${{ env.RELEASE_VERSION }}
+          body_path: release_notes.md 
+          draft: false
+          prerelease: false 
+
+      - name: Upload Release Asset (ZIP)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./release_v${{ env.RELEASE_VERSION }}.zip 
+          asset_name: plataforma_analisis_laboral_v${{ env.RELEASE_VERSION }}.zip 
+          asset_content_type: application/zip
