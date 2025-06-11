@@ -28,24 +28,34 @@ jobs:
           echo "" >> release_notes.md
           echo "Cambios principales:" >> release_notes.md
           echo "- (Añade aquí los cambios importantes de esta versión)" >> release_notes.md
-          # Podrías generar esto automáticamente a partir de los commits si quieres algo más avanzado
 
       - name: Zip Release Assets
         run: |
           mkdir release_package
-          # Copiar los archivos desde la carpeta Programa
-          cp Programa/app_limpieza_ofertas.py release_package/
-          cp Programa/requirements.txt release_package/
+          echo "Copiando archivos del release..."
+          if [ -f Programa/app_limpieza_ofertas.py ]; then
+            cp Programa/app_limpieza_ofertas.py release_package/
+            echo "Copiado: Programa/app_limpieza_ofertas.py"
+          else
+            echo "ADVERTENCIA: Programa/app_limpieza_ofertas.py no encontrado."
+          fi
           
-          # Si tienes otros archivos que quieres incluir en el release,
-          # asegúrate de poner su ruta correcta también.
-          # Por ejemplo, el README.md está en la raíz:
-          if [ -f README.md ]; then cp README.md release_package/; fi
-
+          if [ -f Programa/requirements.txt ]; then
+            cp Programa/requirements.txt release_package/
+            echo "Copiado: Programa/requirements.txt"
+          else
+            echo "ADVERTENCIA: Programa/requirements.txt no encontrado."
+          fi
+          
+          # La línea para copiar README.md ha sido eliminada.
+          
+          # Aquí puedes añadir más archivos si los necesitas en tu release, ajustando sus rutas.
           # Ejemplo si tuvieras un archivo SQL en una carpeta 'sql_scripts':
           # if [ -f sql_scripts/vistas_athena.sql ]; then cp sql_scripts/vistas_athena.sql release_package/; fi
-          
+
+          echo "Creando archivo ZIP..."
           zip -r release_v${{ env.RELEASE_VERSION }}.zip release_package/
+          echo "Archivo ZIP creado: release_v${{ env.RELEASE_VERSION }}.zip"
 
       - name: Create GitHub Release
         id: create_release
