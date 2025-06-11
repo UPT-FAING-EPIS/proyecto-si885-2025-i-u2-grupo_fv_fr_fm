@@ -34,6 +34,3 @@ Para lograr esto, el **dashboard de Power BI** se enfoca en los siguientes objet
 4.  **Evaluar Tendencias Salariales por Especialización y Experiencia en TI:**
     *   Proveer gráficos y visualizaciones interactivas que muestren rangos y promedios salariales (cuando la información esté disponible) para diferentes especializaciones, roles y niveles de experiencia dentro del campo tecnológico. Este análisis ayudará a los usuarios a comprender mejor las expectativas salariales en su área y región, y a negociar de manera más informada.
 
-5.  **Visualizar la Demanda por Niveles Educativos en el Sector Tecnológico:**
-    *   Proporcionar gráficos y análisis que muestren la relación entre el nivel educativo requerido (Técnico, Universitario, Magíster, certificaciones, etc.) y las ofertas laborales disponibles en el sector TI. Esto permitirá a los usuarios evaluar cómo los requisitos educativos varían entre diferentes roles y si se alinean con sus estudios actuales o planificados.
-
