@@ -19,12 +19,12 @@ Para lograr esto, el **dashboard de Power BI** se enfoca en los siguientes objet
 
 ### Objetivo Principal del Dashboard:
 
-1.  **Visualizar Oportunidades Laborales Detalladas para el Sector TI:**
-    *   Mostrar ofertas laborales actualizadas, permitiendo a los usuarios filtrar y explorar por criterios como tipo de contrato, modalidad de trabajo, nivel de experiencia requerido, lenguajes de programación, frameworks, bases de datos y herramientas específicas demandadas. El objetivo es que los usuarios de diversas carreras TI puedan identificar rápidamente las oportunidades que mejor se ajustan a su perfil y aspiraciones profesionales.
+1.  **Visualizar Oportunidades Laborales Detalladas:**
+    *   Mostrar ofertas laborales actualizadas, permitiendo a los usuarios filtrar y explorar por criterios como departamento, mes, nivel de educacion, modalidad de trabajo, lenguajes de programación. El objetivo es que los usuarios de diversas carreras TI puedan identificar rápidamente las oportunidades que mejor se ajustan a su perfil y aspiraciones profesionales.
 
 ### Objetivos Secundarios del Dashboard:
 
-2.  **Identificar Roles y Tecnologías Más Demandadas en el Ámbito Tecnológico:**
+2.  **Identificar Roles en tecnologia de la informacion Más Demandadas:**
     *   Permitir a los usuarios visualizar de forma clara cuáles son los roles (ej. Desarrollador Backend, Ingeniero de Datos, Especialista en Ciberseguridad, etc.) con mayor demanda en el mercado TI peruano.
     *   Analizar y destacar las habilidades y tecnologías (lenguajes, frameworks, bases de datos, metodologías) más requeridas por las empresas en las diferentes ofertas, ayudando a los profesionales y estudiantes a enfocar su aprendizaje y desarrollo.
 
@@ -32,5 +32,5 @@ Para lograr esto, el **dashboard de Power BI** se enfoca en los siguientes objet
     *   Facilitar la visualización de la distribución de las ofertas laborales del sector tecnológico a lo largo de las diferentes regiones del Perú. Esto ayudará a los usuarios a evaluar las oportunidades por ubicación, entender dónde se concentra la demanda para ciertos perfiles y tomar decisiones informadas sobre posibles reubicaciones o enfoque geográfico en su búsqueda de empleo.
 
 4.  **Evaluar Tendencias Salariales por Especialización y Experiencia en TI:**
-    *   Proveer gráficos y visualizaciones interactivas que muestren rangos y promedios salariales (cuando la información esté disponible) para diferentes especializaciones, roles y niveles de experiencia dentro del campo tecnológico. Este análisis ayudará a los usuarios a comprender mejor las expectativas salariales en su área y región, y a negociar de manera más informada.
+    *   Proveer gráficos y visualizaciones interactivas que muestren rangos y promedios salariales para diferentes especializaciones y roles dentro del campo tecnológico. Este análisis ayudará a los usuarios a comprender mejor las expectativas salariales en su área y región, y a negociar de manera más informada.
 
