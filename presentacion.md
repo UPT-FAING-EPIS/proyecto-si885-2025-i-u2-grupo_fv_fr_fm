@@ -54,7 +54,7 @@ La falta de información clara y centralizada sobre el mercado laboral tecnológ
 <!-- DIAGRAMA DE ARQUITECTURA -->
 ## 🏗️ Diagrama de Arquitectura en la Nube
 
-![DataWare/arquitectura_en_nube](arquitectura_en_nube.png)
+![DataWare/arquitectura_en_nube.png](arquitectura_en_nube.png)
 
 ---
 
