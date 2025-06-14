@@ -45,7 +45,7 @@ La falta de información clara y centralizada sobre el mercado laboral tecnológ
 <!-- DIAGRAMA DE BASE DE DATOS -->
 ## 🗃️ Arquitectura de Data WareHouse
 
-![media/arquitectura_data.png](arquitectura_data.png)
+![media/arquitectura_data.png](media/arquitectura_data.png)
 
 > *Este diagrama muestra las tablas y relaciones principales.*
 
@@ -54,7 +54,7 @@ La falta de información clara y centralizada sobre el mercado laboral tecnológ
 <!-- DIAGRAMA DE ARQUITECTURA -->
 ## 🏗️ Diagrama de Arquitectura en la Nube
 
-![media/arquitectura_en_nube.png](arquitectura_en_nube.png)
+![media/arquitectura_en_nube.png](media/arquitectura_en_nube.png)
 
 ---
 
