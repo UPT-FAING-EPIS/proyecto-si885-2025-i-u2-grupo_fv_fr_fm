@@ -13,19 +13,19 @@ En un mercado tecnológico en constante evolución, entender las tendencias de l
 
 El objetivo general de este proyecto es:
 
-Desarrollar e implementar una plataforma interactiva y basada en datos que **monitoree, analice y presente de manera clara y accesible las tendencias, requisitos y oportunidades del mercado laboral para profesionales y estudiantes del amplio espectro de carreras tecnológicas y de computación en Perú**, con el fin de facilitar la toma de decisiones estratégicas para esta diversa audiencia, así como para instituciones educativas y empresas del sector.
+Desarrollar e implementar una dashboard interactivo y basado en datos que **monitoree, analice y presente de manera clara y accesible las tendencias, requisitos y oportunidades del mercado laboral para profesionales y estudiantes del amplio espectro de carreras tecnológicas en Perú**, con el fin de facilitar la toma de decisiones estratégicas para esta diversa audiencia, así como para instituciones educativas y empresas del sector.
 
 Para lograr esto, el **dashboard de Power BI** se enfoca en los siguientes objetivos clave:
 
 ### Objetivo Principal del Dashboard:
 
 1.  **Visualizar Oportunidades Laborales Detalladas para el Sector TI:**
-    *   Mostrar ofertas laborales actualizadas, permitiendo a los usuarios filtrar y explorar por criterios como ubicación geográfica (región), tipo de contrato, modalidad de trabajo, nivel de experiencia requerido, lenguajes de programación, frameworks, bases de datos y herramientas específicas demandadas. El objetivo es que los usuarios de diversas carreras TI puedan identificar rápidamente las oportunidades que mejor se ajustan a su perfil y aspiraciones profesionales.
+    *   Mostrar ofertas laborales actualizadas, permitiendo a los usuarios filtrar y explorar por criterios como tipo de contrato, modalidad de trabajo, nivel de experiencia requerido, lenguajes de programación, frameworks, bases de datos y herramientas específicas demandadas. El objetivo es que los usuarios de diversas carreras TI puedan identificar rápidamente las oportunidades que mejor se ajustan a su perfil y aspiraciones profesionales.
 
 ### Objetivos Secundarios del Dashboard:
 
 2.  **Identificar Roles y Tecnologías Más Demandadas en el Ámbito Tecnológico:**
-    *   Permitir a los usuarios visualizar de forma clara cuáles son los roles (ej. Desarrollador Backend, Ingeniero de Datos, Especialista en Ciberseguridad, etc.) y categorías de puestos con mayor demanda en el mercado TI peruano.
+    *   Permitir a los usuarios visualizar de forma clara cuáles son los roles (ej. Desarrollador Backend, Ingeniero de Datos, Especialista en Ciberseguridad, etc.) con mayor demanda en el mercado TI peruano.
     *   Analizar y destacar las habilidades y tecnologías (lenguajes, frameworks, bases de datos, metodologías) más requeridas por las empresas en las diferentes ofertas, ayudando a los profesionales y estudiantes a enfocar su aprendizaje y desarrollo.
 
 3.  **Análisis Geográfico de la Oferta Laboral TI:**
