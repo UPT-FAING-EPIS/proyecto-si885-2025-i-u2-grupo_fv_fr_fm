@@ -10,221 +10,239 @@
 
 **Escuela Profesional de Ingeniería de Sistemas**
 
-**Proyecto *{Nombre de Proyecto}***
+**Proyecto *Plataforma de Análisis del Mercado Laboral Tecnológico***
 
-Curso: *{Nombre de Asignatura}*
+Curso: *Inteligencia de Negocios*
 
-Docente: *{Nombre de Docente}*
+Docente: *Mag. Patrick Cuadros Quiroga*
+
 
 Integrantes:
 
-***{Apellidos y nombres del estudiante (código universitario)}***
+***Daleska Nicolle Fernandez Villanueva (2021070308)***
+
+***Andree Sebastian Flores Melendez  (2017057494)***
+
+***Mario Antonio Flores Ramos  (2018000597)***
+
 
 **Tacna – Perú**
 
-***{Año}***
+***2025***
 
-**  
-**
+---
+
 </center>
 <div style="page-break-after: always; visibility: hidden">\pagebreak</div>
 
-Sistema *{Nombre del Sistema}*
+# Plataforma de Análisis del Mercado Laboral Tecnológico
 
-Informe de Factibilidad
+## Informe de Factibilidad
 
-Versión *{1.0}*
+**Versión 2.0**
 
-|CONTROL DE VERSIONES||||||
-| :-: | :- | :- | :- | :- | :- |
-|Versión|Hecha por|Revisada por|Aprobada por|Fecha|Motivo|
-|1\.0|MPV|ELV|ARV|10/10/2020|Versión Original|
+**Control de Versiones**  
+| Versión | Hecha por | Revisada por | Aprobada por | Fecha      | Motivo         |
+|---------|-----------|--------------|--------------|------------|----------------|
+| 2.0     | AFM       | AFM          | MFR          | 09/06/2025 | Versión Original |
 
-<div style="page-break-after: always; visibility: hidden">\pagebreak</div>
+---
 
-# **INDICE GENERAL**
+## Índice General
 
-[1. Descripción del Proyecto](#_Toc52661346)
+1. [Descripción del Proyecto](#descripción-del-proyecto)
+2. [Riesgos](#riesgos)
+3. [Análisis de la Situación Actual](#análisis-de-la-situación-actual)
+4. [Estudio de Factibilidad](#estudio-de-factibilidad)
+   - 4.1 [Factibilidad Técnica](#factibilidad-técnica)
+   - 4.2 [Factibilidad Económica](#factibilidad-económica)
+   - 4.3 [Factibilidad Operativa](#factibilidad-operativa)
+   - 4.4 [Factibilidad Legal](#factibilidad-legal)
+   - 4.5 [Factibilidad Social](#factibilidad-social)
+   - 4.6 [Factibilidad Ambiental](#factibilidad-ambiental)
+5. [Análisis Financiero](#análisis-financiero)
+6. [Conclusiones](#conclusiones)
 
-[2. Riesgos](#_Toc52661347)
+---
 
-[3. Análisis de la Situación actual](#_Toc52661348)
+## Descripción del Proyecto
 
-[4. Estudio de Factibilidad](#_Toc52661349)
+### Nombre del Proyecto
+**Plataforma de Análisis del Mercado Laboral Tecnológico**
 
-[4.1 Factibilidad Técnica](#_Toc52661350)
+### Duración del Proyecto
+3 meses (desde la fase de análisis hasta la implementación y prueba del sistema)
 
-[4.2 Factibilidad económica](#_Toc52661351)
+### Descripción
+Este proyecto tiene como objetivo crear un dashboard que permita analizar el mercado laboral tecnológico. La plataforma ayudará a estudiantes, egresados y profesionales a conocer qué empleos están disponibles, qué tecnologías están siendo más utilizadas y qué habilidades buscan las empresas actualmente. Además, permitirá a las universidades adaptar sus cursos a las necesidades reales del mercado laboral. Las empresas podrán entender mejor el mercado y mejorar cómo contratan nuevos talentos.
 
-[4.3 Factibilidad Operativa](#_Toc52661352)
+### Objetivos
 
-[4.4 Factibilidad Legal](#_Toc52661353)
+#### Objetivo General
+Desarrollar un dashboard moderno e intuitivo que permita a estudiantes, egresados y profesionales en tecnología visualizar y analizar de manera clara y accesible la demanda laboral actual, ayudándoles a identificar oportunidades de empleo y prepararse mejor para el mercado.
 
-[4.5 Factibilidad Social](#_Toc52661354)
+#### Objetivos Específicos
+1. Recopilar información actualizada sobre las ofertas laborales disponibles para profesionales.
+2. Analizar y mostrar los datos de manera interactiva, utilizando estadísticas y comparaciones que faciliten la comprensión de las tendencias laborales, las habilidades más solicitadas y los cambios en la demanda del mercado.
+3. Mantener la aplicación siempre actualizada, integrando de forma constante nuevas tendencias, tecnologías emergentes y las necesidades cambiantes del mercado laboral, asegurando que la información sea útil y actual.
 
-[4.6 Factibilidad Ambiental](#_Toc52661355)
+---
 
-[5. Análisis Financiero](#_Toc52661356)
+## Riesgos
 
-[6. Conclusiones](#_Toc52661357)
+1. **Dependencia de fuentes de datos externas**: La calidad de la información depende de portales de empleo y su disponibilidad.
+2. **Precisión de datos**: Posibles inconsistencias si las fuentes no son actualizadas.
+3. **Sobrecarga del servidor**: Riesgo de baja capacidad ante muchos usuarios concurrentes.
+4. **Cumplimiento legal**: Necesidad de respetar la Ley de Protección de Datos Personales.
 
+---
 
-<div style="page-break-after: always; visibility: hidden">\pagebreak</div>
+## Análisis de la Situación Actual
 
-**<u>Informe de Factibilidad</u>**
+### Planteamiento del Problema
+Existe una brecha entre la formación académica de los estudiantes y las demandas reales del mercado laboral. Muchos profesionales carecen de información sobre las habilidades requeridas, salarios, ubicaciones con alta demanda, lo que genera desempleo o subempleo. Actualmente no hay una herramienta específica que analice el mercado de forma integral para este campo.
 
-1. <span id="_Toc52661346" class="anchor"></span>**Descripción del Proyecto**
+### Consideraciones de Hardware y Software
 
-    1.1. Nombre del proyecto
+#### Hardware
+Para el desarrollo y prueba de la plataforma web de monitoreo y análisis del mercado laboral, se utilizarán 3 computadoras con las siguientes características:
 
-    1.2. Duración del proyecto
+- **Procesador**: Intel Core i5 de octava generación o superior, adecuado para tareas de programación, análisis de datos y pruebas del sistema, asegurando fluidez y rapidez en el desarrollo.
+- **Sistema Operativo**: Windows 10 o versiones más recientes. Para el alojamiento en servidores, se recomienda utilizar Linux (si el proveedor de hosting lo permite), ya que ofrece mayor estabilidad, seguridad y un menor costo operativo.
+- **Memoria RAM**: 16 GB DDR4, lo que permite ejecutar sin problemas herramientas de desarrollo, servidores locales, entornos de prueba y múltiples aplicaciones al mismo tiempo.
+- **Accesorios**: Monitor, teclado y mouse estándar serán suficientes para llevar a cabo las tareas de desarrollo, diseño y pruebas funcionales de la plataforma.
 
-    1.3. Descripción
+#### Software
 
-        En que consiste el proyecto/importancia del mismo, contexto en que se va desenvolver
+- **Lenguaje de programación**: Se empleará Python como lenguaje principal para desarrollar el backend de la aplicación. Para la parte visual, se utilizarán Power BI, lo que permitirá crear una interfaz moderna e interactiva.
+- **Base de datos**: La información sobre ofertas de empleo, habilidades demandadas y usuarios se almacenará en una base de datos PostgreSQL, estructurada para garantizar eficiencia en la consulta y manejo de los datos.
+- **Entorno de desarrollo**: Se trabajará con Visual Studio Code, un entorno ligero y flexible que ofrece todas las herramientas necesarias para programar en Python, gestionar la base de datos y realizar pruebas de manera eficiente.
 
-    1.4. Objetivos
+---
 
-        1.4.1 Objetivo general
-        1.4.2 Objetivos Específicos
-            Para cada objetivo específico se indicara que se va a lograr
+## Estudio de Factibilidad
 
-<div style="page-break-after: always; visibility: hidden">\pagebreak</div>
+### Factibilidad Técnica
 
-2. <span id="_Toc52661347" class="anchor"></span>**Riesgos**
+1. **Hardware**: Se utilizarán computadoras de gama media con procesadores Intel Core i5 o superior y al menos 8 GB de RAM, suficientes para programar, hacer pruebas y administrar la plataforma de manera fluida.
+2. **Servidor en la nube**: Se necesitará un servidor con almacenamiento en la nube para guardar y acceder de forma segura a los datos recolectados, permitiendo acceso remoto para los desarrolladores y usuarios autorizados.
+3. **Software**: El sistema será desarrollado en Python, utilizando este lenguaje para la lógica del backend y el procesamiento de datos. Para la visualización y análisis de la información, se empleará Power BI, lo que permitirá crear una interfaz interactiva, intuitiva y de fácil acceso para los usuarios.
+4. **Visualización y exportación de datos**: Se usarán herramientas compatibles con PDF, Excel y JSON para que los usuarios puedan ver y descargar reportes de manera sencilla.
+5. **Base de datos**: No se utilizará un sistema gestor de base de datos tradicional. En su lugar, la información sobre ofertas laborales, habilidades demandadas, estadísticas y otros datos relevantes se almacenará en un archivo CSV. Este enfoque permite manejar los datos de forma sencilla y flexible para su posterior análisis en Python y visualización en Power BI.
 
-    Señale los riesgos que pudieran afectar el éxito del proyecto.}*
+### Factibilidad Económica
 
-<div style="page-break-after: always; visibility: hidden">\pagebreak</div>
+#### Costos Generales
 
-3. <span id="_Toc52661348" class="anchor"></span>**Análisis de la Situación actual**
+| Concepto                      | Cantidad | Costo Unitario (S/) | Subtotal (S/) |
+|--------------------------------|----------|---------------------|---------------|
+| Computadoras para desarrollo   | 2        | 1,000               | 2,000         |
+| Material de oficina            | -        | 200                 | 200           |
+| **Total**                      | -        | -                   | **2,200**     |
 
-    3.1. Planteamiento del problema
+#### Costos Operativos Durante el Desarrollo
 
-            Describa antecedentes y situación actual, explicando la problemática y/o necesidad que será resuelta con el proyecto propuesto.
+| Concepto                     | Cantidad | Costo Mensual (S/) | Total (S/) (6 meses) |
+|-------------------------------|----------|--------------------|----------------------|
+| Servicios básicos (agua, luz)  | 1        | 200                | 1,200                |
+| Servidor en la nube            | 1        | 150                | 900                  |
+| **Total**                      | -        | -                  | **2,100**            |
 
-    3.2. Consideraciones de hardware y software
+#### Costos del Ambiente
 
-            Hardware y software posibles para la implementación, se analizara lo que existe y es alcanzable, se evaluara que tecnología se puede > utilizar en el proyecto.
+| Concepto                   | Costos (S/) |
+|-----------------------------|-------------|
+| Hosting                     | 150         |
+| Dominio web (.com o .org)   | 50          |
+| Infraestructura de red      | 200         |
+| **Total**                   | **400**     |
 
-<div style="page-break-after: always; visibility: hidden">\pagebreak</div>
+#### Costos de Personal
 
-4. <span id="_Toc52661349" class="anchor"></span>**Estudio de
-    Factibilidad**
+| Rol                        | Cantidad | Salario Mensual (S/) | Duración (Mensual) | Subtotal (S/) |
+|----------------------------|----------|----------------------|------------------|---------------|
+| Desarrollador Backend       | 1        | 900                  | 3                | 2,700         |
+| Desarrollador Frontend      | 1        | 1,000                | 3                | 2,100         |
+| Analista de Requerimientos | 1        | 900                  | 3                | 400           |
+| **Total**                   | -        | -                    | -                | **8,400**     |
 
-    Describir los resultados que esperan alcanzar del estudio de factibilidad, las actividades que se realizaron para preparar la evaluación de factibilidad y por quien fue aprobado.
+#### Costos Totales
 
-    4.1. <span id="_Toc52661350" class="anchor"></span>Factibilidad Técnica
+| Categoría                  | Costos Total (S/) |
+|----------------------------|-------------------|
+| Costos Generales            | 2,200             |
+| Costos Operativos           | 2,100             |
+| Costos del Ambiente         | 400               |
+| Costos de Personal          | 8,400             |
+| **Total**                   | **13,100**        |
 
-        El estudio de viabilidad técnica se enfoca en obtener un entendimiento de los recursos tecnológicos disponibles actualmente y su aplicabilidad a las necesidades que se espera tenga el proyecto. En el caso de tecnología informática esto implica una evaluación del hardware y software y como este puede cubrir las necesidades del sistema propuesto.
+---
 
-        Realizar una evaluación de la tecnología actual existente y la posibilidad de utilizarla en el desarrollo e implantación del sistema.*
+### Factibilidad Operativa
 
-        Describir acerca del hardware (equipos, servidor), software (aplicaciones, navegadores, sistemas operativos, dominio, internet, infraestructura de red física, etc.
+El sistema está pensado para ser fácil de usar, con una interfaz intuitiva y amigable. Cualquier persona podrá entrar desde su navegador y acceder a la información sin necesidad de descargar nada. Además, tendrá filtros, comparaciones y gráficos para facilitar la experiencia. Se actualizará frecuentemente para mantener todo al día, lo que garantiza que pueda operar bien por mucho tiempo.
 
-    4.2. <span id="_Toc52661351" class="anchor"></span>Factibilidad Económica
+---
 
-        El propósito del estudio de viabilidad económica, es determinar los beneficios económicos del proyecto o sistema propuesto para la organización, en contraposición con los costos.
-        Como se mencionó anteriormente en el estudio de factibilidad técnica wvaluar si la institución (departamento de TI) cuenta con las herramientas necesarias para la implantación del sistema y evaluar si la propuesta requiere o no de una inversión inicial en infraestructura informática.
-        Se plantearán los costos del proyecto.
-        Costeo del Proyecto: Consiste en estimar los costos de los recursos Humanos, materiales o consumibles y/o máquinas) directos para completar las actividades del proyecto}.*
+### Factibilidad Legal
 
-        Definir los siguientes costos:
+El proyecto será desarrollado respetando las leyes vigentes, en especial la Ley de Protección de Datos Personales (Ley N° 29733 - Perú). Solo se usará información que sea pública o que los usuarios entreguen de forma voluntaria. Además, la plataforma contará con políticas de privacidad claras para proteger los datos personales y garantizar un uso legal de toda la información.
 
-        4.2.1. Costos Generales
+---
 
-                Los costos generales son todos los gastos realizados en accesorios y material de oficina y de uso diario, necesarios para los procesos, tales como, papeles, plumas, cartuchos de impresora, marcadores, computadora etc. Colocar tabla de costos.
+### Factibilidad Social
 
-        4.2.2. Costos operativos durante el desarrollo 
-        
-                Evaluar costos necesarios para la operatividad de las actividades de la empresa durante el periodo en el que se realizara el proyecto. Los costos de operación pueden ser renta de oficina, agua, luz, teléfono, etc.
+El impacto social es muy positivo. Ayudará a que más estudiantes y egresados puedan encontrar trabajo en su área, conociendo mejor qué habilidades deben aprender y en qué lugares hay más oportunidades. También ayudará a que las universidades mejoren sus planes de estudio y que las empresas contraten personal más capacitado. En general, busca mejorar la empleabilidad y apoyar el crecimiento profesional.
 
-        4.2.3. Costos del ambiente
+---
 
-                Evaluar si se cuenta con los requerimientos técnicos para la implantación del software como el dominio, infraestructura de red, acceso a internet, etc.
+### Factibilidad Ambiental
 
-        4.2.4. Costos de personal
+1. **Uso eficiente de energía**: La plataforma digitaliza procesos de análisis y consulta de información laboral, lo que evita actividades presenciales y reduce el uso excesivo de recursos físicos, optimizando así el consumo energético.
+2. **Optimización del almacenamiento digital**: La información se gestionará en la nube de forma organizada y sin duplicados, permitiendo un mejor uso del espacio en servidores y evitando el consumo innecesario de recursos tecnológicos.
+3. **Fomento de la conciencia ambiental**: Al utilizar esta plataforma digital, los usuarios fortalecen su conciencia ecológica, promoviendo el uso responsable de herramientas tecnológicas y la reducción del impacto ambiental en sus actividades educativas y profesionales.
 
-                Aquí se incluyen los gastos generados por el recurso humano que se necesita para el desarrollo del sistema únicamente.
+---
 
-                No se considerará personal para la operación y funcionamiento del sistema.
+## Análisis Financiero
 
-                Incluir tabla que muestra los gastos correspondientes al personal.
+### Justificación de la Inversión
 
-                Indicar organización y roles. Indicar horario de trabajo del personal.
+#### Beneficios del Proyecto
 
-        4.2.5.  Costos totales del desarrollo del sistema
+**Beneficios Tangibles:**
 
-                {Totalizar costos y realizar resumen de costo final del proyecto y la forma de pago.
+1. Acceso rápido a información laboral actualizada.
+2. Ahorro de tiempo en la búsqueda de empleo.
+3. Mejora en la planificación académica.
+4. Análisis de tendencias y habilidades demandadas.
 
-    4.3. <span id="_Toc52661352" class="anchor"></span>Factibilidad Operativa
+**Beneficios Intangibles:**
 
-        Describir los beneficios del producto y si se tiene la capacidad por parte del cliente para mantener el sistema funcionando y garantizar el buen funcionamiento y su impacto en los usuarios. Lista de interesados.
+1. Mayor orientación profesional.
+2. Confianza en los datos.
+3. Impulso a la mejora continua.
 
-    4.4. <span id="_Toc52661353" class="anchor"></span>Factibilidad Legal
+#### Criterios de Inversión
 
-        Determinar si existe conflicto del proyecto con restricciones legales como leyes y regulaciones del país o locales relacionadas con seguridad, protección de datos, conducta de negocio, empleo y adquisiciones.
+##### Relación Beneficio/Costo (B/C)
 
-    4.5. <span id="_Toc52661354" class="anchor"></span>Factibilidad Social 
+| Inversión | S/. 13,100 |
+|-----------|------------|
+| **B/C**   | S/. 1.75   |
+  
+##### Valor Actual Neto (VAN)
 
-        Evaluar influencias y asuntos de índole social y cultural como el clima político, códigos de conducta y ética*
+| VAN        | S/. 7,789.92 |
+|------------|--------------|
 
-    4.6. <span id="_Toc52661355" class="anchor"></span>Factibilidad Ambiental
+##### Tasa Interna de Retorno (TIR)
 
-        Evaluar influencias y asuntos de índole ambiental como el impacto y repercusión en el medio ambiente.
+| TIR        | 48%          |
+|------------|--------------|
 
-<div style="page-break-after: always; visibility: hidden">\pagebreak</div>
+---
 
-5. <span id="_Toc52661356" class="anchor"></span>**Análisis Financiero**
+## Conclusiones
 
-    El plan financiero se ocupa del análisis de ingresos y gastos asociados a cada proyecto, desde el punto de vista del instante temporal en que se producen. Su misión fundamental es detectar situaciones financieramente inadecuadas.
-    Se tiene que estimar financieramente el resultado del proyecto.
-
-    5.1. Justificación de la Inversión
-
-        5.1.1. Beneficios del Proyecto
-
-            El beneficio se calcula como el margen económico menos los costes de oportunidad, que son los márgenes que hubieran podido obtenerse de haber dedicado el capital y el esfuerzo a otras actividades.
-            El beneficio, obtenido lícitamente, no es sólo una recompensa a la inversión, al esfuerzo y al riesgo asumidos por el empresario, sino que también es un factor esencial para que las empresas sigan en el  mercado e incorporen nuevas inversiones al tejido industrial y social de las naciones.
-            Describir beneficios tangibles e intangibles*
-            Beneficios tangibles: son de fácil cuantificación, generalmente están relacionados con la reducción de recursos o talento humano.
-            Beneficios intangibles: no son fácilmente cuantificables y están relacionados con elementos o mejora en otros procesos de la organización.
->
-            Ejemplo de beneficios:
-
-            - Mejoras en la eficiencia del área bajo estudio.
-            - Reducción de personal.
-            - Reducción de futuras inversiones y costos.
-            - Disponibilidad del recurso humano.
-            - Mejoras en planeación, control y uso de recursos.
-            - Suministro oportuno de insumos para las operaciones.
-            - Cumplimiento de requerimientos gubernamentales.
-            - Toma acertada de decisiones.
-            - Disponibilidad de información apropiada.
-            - Aumento en la confiabilidad de la información.
-            - Mejor servicio al cliente externo e interno
-            - Logro de ventajas competitivas.
-            - Valor agregado a un producto de la compañía.
-        
-        5.1.2. Criterios de Inversión
-
-            5.1.2.1. Relación Beneficio/Costo (B/C)
-
-                En base a los costos y beneficios identificados se evalúa si es factible el desarrollo del proyecto. 
-                Si se presentan varias alternativas de solución se evaluará cada una de ellas para determinar la mejor solución desde el punto de vista del > retorno de la inversión
-                El B/C si es mayor a uno, se acepta el proyecto; si el B/C es igual a uno es indiferente aceptar o rechazar el proyecto y si el B/C es menor a uno se rechaza el proyecto
-
-            5.1.2.2. Valor Actual Neto (VAN)
-            
-                Valor actual de los beneficios netos que genera el proyecto. Si el VAN es mayor que cero, se acepta el proyecto; si el VAN es igual a cero es indiferente aceptar o rechazar el proyecto y si el VAN es menor que cero se rechaza el proyecto
-
-            5.1.2.3 Tasa Interna de Retorno (TIR)*
-                Es la tasa porcentual que indica la rentabilidad promedio anual que genera el capital invertido en el proyecto. Si la TIR es mayor que el costo de oportunidad se acepta el proyecto, si la TIR es igual al costo de oportunidad es indiferente aceptar o rechazar el proyecto, si la TIR es menor que el costo de oportunidad se rechaza el proyecto
-
-                Costo de oportunidad de capital (COK) es la tasa de interés que podría haber obtenido con el dinero invertido en el proyecto
-
-<div style="page-break-after: always; visibility: hidden">\pagebreak</div>
-
-6. <span id="_Toc52661357" class="anchor"></span>**Conclusiones**
-
-Explicar los resultados del análisis de factibilidad que nos indican si el proyecto es viable y factible.
+Este proyecto busca desarrollar una plataforma que ayude a entender mejor el mercado laboral en el campo de tecnología. Gracias a esta herramienta, se podrá conocer qué puestos son más buscados, qué habilidades se necesitan y cómo se mueve el mercado en tiempo real. Esto será útil tanto para los estudiantes que quieren prepararse mejor, como para las universidades que desean adaptar su enseñanza a lo que realmente se necesita afuera. Desde el punto de vista económico, el proyecto es rentable. Los cálculos muestran que se recupera la inversión, se obtiene una buena ganancia y tiene un buen potencial de crecimiento. También trae beneficios sociales al mejorar la empleabilidad.
